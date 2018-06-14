@@ -1,0 +1,14 @@
+﻿<!-- This is only an excerpt of what is needed to make a reskin mod. See the RESKIN EXAMPLE mod at http://steamcommunity.com/sharedfiles/filedetails/?id=928667062 for more info. -->
+<!-- The name of the RemappingDefinition is the name of the prefab (can be found with the resource export tool). Add one for each ship or module you want to reskin. -->
+<RemappingDefinition Name="MDL_Wpn_HeroesPirate_Beam_SmallSide_01">
+    <!-- Add one MaterialData for each material you want to modify. -->
+    <MaterialData Name="MDL_Wpn_Heroes_05">
+        <!-- Unlike planets, there are no LODs here. However, there are several materials, with several textures. -->
+        <!-- Note that the texture must be in the Resources folder but the path must not include it. -->
+        <MaterialProperty Name="_MainTex">Textures\WPN_Heroes_05_AlbedoTransparency.png</MaterialProperty>
+        <MaterialProperty Name="_BumpMap">Textures\WPN_Heroes_05_Normal.png</MaterialProperty>
+        <MaterialProperty Name="_MetallicGlossMap">Textures\WPN_Heroes_05_MetallicSmoothness.png</MaterialProperty>
+        <MaterialProperty Name="_OcclusionMap">Textures\WPN_Heroes_05_AmbientOcclusion.png</MaterialProperty>
+        <MaterialProperty Name="_EmissionMap">Textures\WPN_Heroes_05_Emission.png</MaterialProperty>
+    </MaterialData>
+</RemappingDefinition>
