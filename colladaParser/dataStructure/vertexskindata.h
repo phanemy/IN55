@@ -8,8 +8,8 @@ class VertexSkinData
 {
 public:
     VertexSkinData();
-    void addJointEffect(int jointId, float weight);
-    void limitJointNumber(int max);
+	void addBoneEffect(int boneId, float weight);
+	void limitBoneNumber(int max);
     QList<int>& getBoneIds();
     QList<float>& getWeights();
 
@@ -19,7 +19,7 @@ private:
     void fillEmptyWeights(int max);
     float saveTopWeights(float* topWeightsArray, int max);
     void refillWeightList(float* topWeights, float total, int max);
-    void removeExcessJointIds(int max);
+	void removeExcessBoneIds(int max);
 };
 
 #endif // VERTEXSKINDATA_H

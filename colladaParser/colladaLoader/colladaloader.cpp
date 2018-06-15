@@ -16,7 +16,6 @@ AnimatedModelData ColladaLoader::loadColladaModel(QFile* colladaFile, int maxWei
 		exit(-1);
     }
     QDomElement dom_element = dom.documentElement();
-//    QMessageBox::information(0, "Nom de la balise", "Le nom de la balise est " + dom_element.tagName());
 	QDomNode library_controllers_node = dom_element.namedItem("library_controllers");
 	if(library_controllers_node.isNull())
 	{
@@ -31,23 +30,16 @@ AnimatedModelData ColladaLoader::loadColladaModel(QFile* colladaFile, int maxWei
 	}
     else
     {
-		cout << "import skinningData"<<endl;
-//        QDomNode skin = dom_element.namedItem("library_controllers").namedItem("controller").namedItem("skin");
         SkinLoader skinLoader = SkinLoader(library_controllers_node, maxWeights);
         SkinningData skinningData = skinLoader.extractSkinData();
-		cout << "import jointsData"<<endl;
         SkeletonLoader bonesLoader = SkeletonLoader(dom_element.namedItem("library_visual_scenes"), skinningData.getBoneOrder());
-        SkeletonData jointsData = bonesLoader.extractBoneData();
-		cout << "import meshData"<<endl;
+		SkeletonData bonesData = bonesLoader.extractBoneData();
 		GeometryLoader g = GeometryLoader(dom_element.namedItem("library_geometries"), skinningData.getVertexSkinData());
 		MeshData meshData = g.extractModelData();
-		cout << "import texture"<<endl;
 		TextureLoader t = TextureLoader(library_images_node);
 		TextureData textureData = t.extractTexture();
-//		cout <<"textureData "<<textureData.getTextUrl().toStdString()<<endl;
 		colladaFile->close();
-		cout << "import end"<<endl;
-		return AnimatedModelData(meshData, jointsData,textureData);
+		return AnimatedModelData(meshData, bonesData,textureData);
 	}
 }
 
@@ -65,12 +57,10 @@ AnimationData ColladaLoader::loadColladaAnimation(QFile* colladaFile) {
 		exit(-1);
 	}
 	QDomElement dom_element = dom.documentElement();
-//	QMessageBox::information(0, "Nom de la balise", "Le nom de la balise est " + dom_element.tagName());
 	QDomNode library_animations_node = dom_element.namedItem("library_animations");
 	QDomNode library_visual_scenes_node = dom_element.namedItem("library_visual_scenes");
 	if(library_animations_node.isNull() || library_visual_scenes_node.isNull())
 	{
-//		QMessageBox::warning(0, "Erreur à l'ouverture du document XML","impossible de trouver le noeuds library_animations et/ou le noeud library_visual_scenes");
 		exit(-1);
 	}
 	else

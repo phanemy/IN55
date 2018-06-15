@@ -8,45 +8,28 @@ SkeletonLoader::SkeletonLoader(QDomNode visualSceneNode, QStringList boneOrder):
 
 SkeletonData SkeletonLoader::extractBoneData(){
     QDomNode headNode = m_armatureData.namedItem("node");
-    BoneData headJoint = loadJointData(headNode, true);
-    return SkeletonData(m_boneCount, headJoint);
+	BoneData headBone = loadBoneData(headNode, true);
+	return SkeletonData(m_boneCount, headBone);
 }
 
-BoneData SkeletonLoader::loadJointData(QDomNode jointNode, bool isRoot){
-    BoneData joint = extractMainJointData(jointNode, isRoot);
-//	cout<<"loadJointData "<< joint.getIndex()<< " "<<joint.getNameId().toStdString() <<endl;
-	QDomNodeList listNode = MyXmlNode(jointNode).getChildren("node");
+BoneData SkeletonLoader::loadBoneData(QDomNode boneNode, bool isRoot){
+	BoneData bone = extractMainBoneData(boneNode, isRoot);
+	QDomNodeList listNode = MyXmlNode(boneNode).getChildren("node");
     for(int i = 0; i < listNode.size(); ++i){
-        joint.addChild(loadJointData(listNode.item(i), false));
+		bone.addChild(loadBoneData(listNode.item(i), false));
     }
-    return joint;
+	return bone;
 }
 
-BoneData SkeletonLoader::extractMainJointData(QDomNode jointNode, bool isRoot){
-    QString nameId = jointNode.attributes().namedItem("id").toAttr().value();
+BoneData SkeletonLoader::extractMainBoneData(QDomNode boneNode, bool isRoot){
+	QString nameId = boneNode.attributes().namedItem("id").toAttr().value();
 	int index = m_boneOrder.indexOf(nameId);
-	QStringList matrixData = jointNode.namedItem("matrix").firstChild().nodeValue().split(" ");
+	QStringList matrixData = boneNode.namedItem("matrix").firstChild().nodeValue().split(" ");
 	QMatrix4x4 matrix = QMatrix4x4(convertData(matrixData));
-//	cout << "SkeletonLoader matrix "<< matrix.column(0).x() <<" " <<matrix.column(1).x() <<" "<<matrix.column(2).x() <<" "<<matrix.column(3).x() <<endl;
-//	cout << "SkeletonLoader matrix "<< matrix.column(0).y() <<" " <<matrix.column(1).y() <<" "<<matrix.column(2).y() <<" "<<matrix.column(3).y() <<endl;
-//	cout << "SkeletonLoader matrix "<< matrix.column(0).z() <<" " <<matrix.column(1).z() <<" "<<matrix.column(2).z() <<" "<<matrix.column(3).z() <<endl;
-//	cout << "SkeletonLoader matrix "<< matrix.column(0).w() <<" " <<matrix.column(1).w() <<" "<<matrix.column(2).w() <<" "<<matrix.column(3).w() <<"\n"<<endl;
-
-//	matrix = matrix.transposed();
-//	cout << "SkeletonLoader matrix "<< matrix.column(0).x() <<" " <<matrix.column(1).x() <<" "<<matrix.column(2).x() <<" "<<matrix.column(3).x() <<endl;
-//	cout << "SkeletonLoader matrix "<< matrix.column(0).y() <<" " <<matrix.column(1).y() <<" "<<matrix.column(2).y() <<" "<<matrix.column(3).y() <<endl;
-//	cout << "SkeletonLoader matrix "<< matrix.column(0).z() <<" " <<matrix.column(1).z() <<" "<<matrix.column(2).z() <<" "<<matrix.column(3).z() <<endl;
-//	cout << "SkeletonLoader matrix "<< matrix.column(0).w() <<" " <<matrix.column(1).w() <<" "<<matrix.column(2).w() <<" "<<matrix.column(3).w() <<"\n"<<endl;
 //	matrix = matrix.transposed();
 	if(isRoot){
-		//because in Blender z is up, but in our game y is up.
 		matrix = matrix * m_CORRECTION;
 	}
-//	cout << "SkeletonLoader matrix "<< matrix.column(0).x() <<" " <<matrix.column(1).x() <<" "<<matrix.column(2).x() <<" "<<matrix.column(3).x() <<endl;
-//	cout << "SkeletonLoader matrix "<< matrix.column(0).y() <<" " <<matrix.column(1).y() <<" "<<matrix.column(2).y() <<" "<<matrix.column(3).y() <<endl;
-//	cout << "SkeletonLoader matrix "<< matrix.column(0).z() <<" " <<matrix.column(1).z() <<" "<<matrix.column(2).z() <<" "<<matrix.column(3).z() <<endl;
-//	cout << "SkeletonLoader matrix "<< matrix.column(0).w() <<" " <<matrix.column(1).w() <<" "<<matrix.column(2).w() <<" "<<matrix.column(3).w() <<"\n"<<endl;
-	cout<<"\n"<<endl;
 
 	m_boneCount++;
     return BoneData(index, nameId, matrix);

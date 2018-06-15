@@ -39,7 +39,7 @@ float Vertex::getLength(){
 }
 
 bool Vertex::isSet(){
-	return (m_textureIndex!=m_NO_INDEX || m_normalIndex!=m_NO_INDEX);
+	return (m_textureIndex!=m_NO_INDEX && m_normalIndex!=m_NO_INDEX);
 }
 
 bool Vertex::hasSameTextureAndNormal(int textureIndexOther,int normalIndexOther){

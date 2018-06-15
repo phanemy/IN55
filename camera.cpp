@@ -18,6 +18,7 @@ void Camera::moveTo(float x, float y, float z)
 	position.setX(x);
 	position.setY(y);
 	position.setZ(z);
+	direction = -position;
 }
 
 void Camera::moveForward(QVector3D vect)

@@ -11,51 +11,40 @@ SkinLoader::SkinLoader(QDomNode controllersNode, int maxWeights) : m_maxWeights(
     }
 
 SkinningData SkinLoader::extractSkinData() {
-        QStringList jointsList = loadJointsList();
+		QStringList bonesList = loadBonesList();
         QList<float> weights = loadWeights();
         QDomNode weightsDataNode = this->m_skinningData.firstChildElement("vertex_weights");
-        QList<int> effectorJointCounts = getEffectiveJointsCounts(weightsDataNode);
-//        for(int count : effectorJointCounts)
-//            cout<<count <<endl;
-
-        QList<VertexSkinData> vertexWeights = getSkinData(weightsDataNode, effectorJointCounts, weights);
-        return SkinningData(jointsList, vertexWeights);
+		QList<int> effectorBoneCounts = getEffectiveBonesCounts(weightsDataNode);
+		QList<VertexSkinData> vertexWeights = getSkinData(weightsDataNode, effectorBoneCounts, weights);
+		return SkinningData(bonesList, vertexWeights);
     }
 
-QStringList SkinLoader::loadJointsList() {
+QStringList SkinLoader::loadBonesList() {
         MyXmlNode inputNode = MyXmlNode(this->m_skinningData.firstChildElement("vertex_weights"));
-        QString jointDataId = inputNode.getChildWithAttribute("input", "semantic", "JOINT").attributes().namedItem("source").toAttr().value().mid(1);
-        QDomNode jointsNode = MyXmlNode(m_skinningData).getChildWithAttribute("source", "id", jointDataId).namedItem("Name_array");
-        QDomNode bla = MyXmlNode(m_skinningData).getChildWithAttribute("source", "id", jointDataId).namedItem("Name_array");
-        QStringList names = jointsNode.firstChild().nodeValue().split(" ");
-        QStringList jointsList = QStringList();
+		QString boneDataId = inputNode.getChildWithAttribute("input", "semantic", "JOINT").attributes().namedItem("source").toAttr().value().mid(1);
+		QDomNode bonesNode = MyXmlNode(m_skinningData).getChildWithAttribute("source", "id", boneDataId).namedItem("Name_array");
+		QDomNode bla = MyXmlNode(m_skinningData).getChildWithAttribute("source", "id", boneDataId).namedItem("Name_array");
+		QStringList names = bonesNode.firstChild().nodeValue().split(" ");
+		QStringList bonesList = QStringList();
         for (QString name : names) {
-            jointsList.append(name);
+			bonesList.append(name);
         }
-        return jointsList;
+		return bonesList;
     }
 
 QList<float> SkinLoader::loadWeights() {
         QDomNode inputNode = m_skinningData.namedItem("vertex_weights");
         QString weightsDataId = MyXmlNode(inputNode).getChildWithAttribute("input", "semantic", "WEIGHT").attributes().namedItem("source").toAttr().value().mid(1);
-
-//        cout << "b" << weightsDataId.toStdString() <<endl;
-
-//        cout << "b" << test.toElement().tagName().toStdString() <<endl;
-
         QDomNode weightsNode = MyXmlNode(m_skinningData).getChildWithAttribute("source", "id", weightsDataId).namedItem("float_array");
-
-
         QStringList rawData = weightsNode.firstChild().nodeValue().split(" ");
         QList<float> weights = QList<float>();
         for(QString data : rawData)
         {
-//			cout << "b" << data.toFloat() <<endl;
             weights.push_back(data.toFloat());
         }
         return weights;
     }
-QList<int> SkinLoader::getEffectiveJointsCounts(QDomNode weightsDataNode) {
+QList<int> SkinLoader::getEffectiveBonesCounts(QDomNode weightsDataNode) {
         QStringList rawData = weightsDataNode.namedItem("vcount").firstChild().nodeValue().split(" ");
         QList<int> counts = QList<int>();
         for(QString data : rawData)
@@ -75,15 +64,13 @@ QList<VertexSkinData> SkinLoader::getSkinData(QDomNode weightsDataNode, QList<in
         for (int count : counts) {
             VertexSkinData skinData = VertexSkinData();
             for (int i = 0; i < count; i++) {
-                int jointId = QString(rawData[pointer++]).toInt();
+				int boneId = QString(rawData[pointer++]).toInt();
                 int weightId = QString(rawData[pointer++]).toInt();
                 it = weights.begin();
                 advance(it, weightId);
-//				cout << "a "<<jointId<<endl;
-                skinData.addJointEffect(jointId, *it);
+				skinData.addBoneEffect(boneId, *it);
             }
-
-            skinData.limitJointNumber(this->m_maxWeights);
+			skinData.limitBoneNumber(this->m_maxWeights);
             skinningData.push_back(skinData);
         }
         return skinningData;

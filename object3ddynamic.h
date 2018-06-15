@@ -19,7 +19,6 @@ public:
 	Object3DDynamic(vector<int> indices,vector<float> vertices,vector<float> m_normals,vector<float> textCoord, int nbBone, Bone* rootBone);
 	~Object3DDynamic();
 	void drawGeometry(QOpenGLShaderProgram *program,QMatrix4x4 projection);
-	void drawGeometry(QOpenGLShaderProgram *program,QMatrix4x4 projection, QQuaternion rotation);
 	MeshDynamic* getMesh();
 	void setLocation(QVector3D location);
 	QVector3D getLocation();
@@ -50,9 +49,8 @@ protected:
 	Animation m_animation;
 	Animator m_animator;
 	int m_nbBone;
-	void addBonesToArray(Bone* headJoint, vector<QMatrix4x4>& boneMatrix);
+	void addBonesToArray(Bone* headBone, vector<QMatrix4x4>& boneMatrix);
 	QOpenGLTexture* m_texture;
-//	GLuint m_texture_location;
 };
 
 #endif // OBJECT3DDYNAMIC_H

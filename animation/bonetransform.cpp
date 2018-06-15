@@ -6,12 +6,6 @@ BoneTransform::BoneTransform(QVector3D pos, QQuaternion rot):m_position(pos),m_r
 
 QMatrix4x4 BoneTransform::getLocalTransform(){
 	QMatrix4x4 transform;
-
-//	m_transform.translate(m_pivot);
-//	m_transform.rotate(m_rotation);
-//	m_transform.translate(-m_pivot);
-//	m_transform.translate(m_location);
-
 	transform.translate(m_position);
 	transform.rotate(m_rotation);
 	return transform;

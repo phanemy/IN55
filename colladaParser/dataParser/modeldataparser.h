@@ -8,7 +8,7 @@ class ModelDataParser
 public:
 	static Object3DDynamic* loadModel(AnimatedModelData modelData);
 private:
-	static Bone* createJoints(BoneData data);
+	static Bone* createBones(BoneData data);
 };
 
 #endif // MODELDATAPARSER_H

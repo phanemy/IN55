@@ -5,6 +5,8 @@
 #include <QMatrix4x4>
 #include <iostream>
 
+//Contains the transformation information and matrix of a bone
+
 using namespace std;
 
 class BoneTransform
@@ -14,12 +16,10 @@ public:
 	QMatrix4x4 getLocalTransform();
 	static BoneTransform interpolate(BoneTransform frameA, BoneTransform frameB, float progression);
 	static QVector3D interpolate(QVector3D start, QVector3D end, float progression);
-	QVector3D m_position;
-	QQuaternion m_rotation;
 
 private:
-//	QVector3D m_position;
-//	QQuaternion m_rotation;
+	QVector3D m_position;
+	QQuaternion m_rotation;
 };
 
 #endif // BONETRANSFORM_H

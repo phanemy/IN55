@@ -16,21 +16,21 @@ using namespace std;
 class AnimationLoader
 {
 public:
-	 AnimationLoader(QDomNode animationData, QDomNode jointHierarchy);
+	 AnimationLoader(QDomNode animationData, QDomNode boneHierarchy);
 	~AnimationLoader();
 	 AnimationData extractAnimation();
 
 private:
 	vector<float> getKeyTimes();
 	vector<KeyFrameData> initKeyFrames(vector<float> times);
-	void loadJointTransforms(vector<KeyFrameData>& frames, QDomNode jointData, QString rootNodeId);
-	QString getDataId(QDomNode jointData);
-	QString getJointName(QDomNode jointData);
-	void processTransforms(QString jointName, QStringList rawData, vector<KeyFrameData>& keyFrames, bool root);
-	QString findRootJointName();
+	void loadBoneTransforms(vector<KeyFrameData>& frames, QDomNode boneData, QString rootNodeId);
+	QString getDataId(QDomNode boneData);
+	QString getBoneName(QDomNode boneData);
+	void processTransforms(QString boneName, QStringList rawData, vector<KeyFrameData>& keyFrames, bool root);
+	QString findRootBoneName();
 	QMatrix4x4 m_CORRECTION;
 	QDomNode m_animationData;
-	QDomNode m_jointHierarchy;
+	QDomNode m_boneHierarchy;
 };
 
 

@@ -3,6 +3,8 @@
 #include "keyframe.h"
 #include <vector>
 
+//this class contains all keyframe of a bone
+
 using namespace std;
 
 class BoneAnimation

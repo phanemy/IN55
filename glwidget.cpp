@@ -5,7 +5,7 @@ GLWidget::GLWidget(QWidget *parent) :
 	m_angularSpeed(0),
 	m_camera()
 {
-//    m_fileName = QFileDialog::getOpenFileName(0,tr("Open Callada File"), "", tr("Callada Files (*.dae)"));
+	m_fileName = QFileDialog::getOpenFileName(0,tr("Open Callada File"), "", tr("Callada Files (*.dae)"));
     m_runAnim = false;
 	this->setFocusPolicy(Qt::StrongFocus);
 	m_camera.setSpeed(3);
@@ -124,33 +124,17 @@ void GLWidget::initializeGL()
 	// Enable depth buffer
 	glEnable(GL_DEPTH_TEST);
 
-	// Enable back face culling
-//	glEnable(GL_CULL_FACE);
-
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	glEnable(GL_PROGRAM_POINT_SIZE);
-//cout<<"import"<<endl;
-//    QFile xml_doc("testPiramide.dae");
 
-//	QFile xml_doc("model.dae");
-//	QFile xml_doc("persoTest.dae");
-//	QFile xml_doc("Walk_doneMoi.dae");
 
-	QFile xml_doc("Bras.dae");
-//	QFile xml_doc("CubeMoi.dae");
-
-//    QFile xml_doc(m_fileName);
-	cout << "\nmodel start\n"<<endl;
+	QFile xml_doc(m_fileName);
 	AnimatedModelData modelData = ColladaLoader::loadColladaModel(&xml_doc,3);
-	cout << "\nmodel end\n"<<endl;
 	m_obj = ModelDataParser::loadModel(modelData);
 	AnimationData tempAnim = ColladaLoader::loadColladaAnimation(&xml_doc);
-//	cout << "anim"<<endl;
 	Animation anim= AnimationDataParser::loadAnimation(tempAnim);
 	m_obj->setAnimationList(anim);
-//		cout << "end"<<endl;
-//cout<<"import end"<<endl
+
 	m_camera.moveTo(0,0,7);
 
 	m_lastUpdate = 0;
@@ -165,33 +149,6 @@ void GLWidget::initializeGL()
 
 void GLWidget::initShaders()
 {
-//	// Compile vertex shader
-//	if (!program.addShaderFromSourceFile(QOpenGLShader::Vertex, "vshader.vsh"))
-//		close();
-
-//	// Compile fragment shader
-//	if (!program.addShaderFromSourceFile(QOpenGLShader::Fragment, "fshader.fsh"))
-//		close();
-
-//	// Link shader pipeline
-//	if (!program.link())
-//		close();
-
-//	// Compile vertex shader
-//	if (!billboard.addShaderFromSourceFile(QOpenGLShader::Vertex, "vbillboard.vsh"))
-//		close();
-
-//	// Compile fragment shader
-//	if (!billboard.addShaderFromSourceFile(QOpenGLShader::Fragment, "fshader.fsh"))
-//		close();
-
-//	// Link shader pipeline
-//	if (!billboard.link())
-//		close();
-
-//	if (!computeProgramme.addShaderFromSourceFile(QOpenGLShader::Fragment, "fshader.fsh"))
-//		close();
-	// Compile vertex shader
 	if (!m_program.addShaderFromSourceFile(QOpenGLShader::Vertex, "ressources/vshader.glsl"))
 		close();
 	else

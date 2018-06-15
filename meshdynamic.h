@@ -20,7 +20,7 @@ public:
 	void setVertexData(vector<int> indices,vector<float> vertices,vector<float> normals,vector<float> textureCoords);
 	void setAnimationData(vector<int> boneId,vector<float> boneWeight, int nbBone);
 	VertexData* getVertexData();
-	QVector<QVector3D> getJointID();
+	QVector<QVector3D> getBoneID();
 	QVector<QVector3D> getWeigth();
     int getNbrVertice();
 private:

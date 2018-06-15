@@ -10,7 +10,7 @@ using namespace std;
 class SkinningData
 {
 public:
-    SkinningData(QStringList jointOrder, QList<VertexSkinData> verticesSkinData);
+	SkinningData(QStringList bonesOrder, QList<VertexSkinData> verticesSkinData);
     QStringList getBoneOrder();
     QList<VertexSkinData> getVertexSkinData();
 

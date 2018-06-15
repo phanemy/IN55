@@ -31,7 +31,7 @@ private:
     QVector<float> m_normalsArray;
     QVector<float> m_texturesArray;
     QVector<int> m_indicesArray;
-    QVector<int> m_jointIdsArray;
+	QVector<int> m_boneIdsArray;
     QVector<float> m_weightsArray;
 
     QList<Vertex> m_vertices;

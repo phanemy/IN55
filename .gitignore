@@ -1,2 +1,8 @@
 release
 debug
+.qmake.stash
+Makefile
+Makefile.debug
+Makefile.release
+Remapping.xml
+

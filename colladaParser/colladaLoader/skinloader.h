@@ -17,9 +17,9 @@ public:
 private:
     QDomNode m_skinningData;
     const int m_maxWeights;
-    QStringList loadJointsList();
+	QStringList loadBonesList();
     QList<float> loadWeights();
-    QList<int> getEffectiveJointsCounts(QDomNode weightsDataNode);
+	QList<int> getEffectiveBonesCounts(QDomNode weightsDataNode);
     QList<VertexSkinData> getSkinData(QDomNode weightsDataNode, QList<int> counts, QList<float> weights);
 };
 

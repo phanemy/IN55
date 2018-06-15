@@ -3,6 +3,8 @@
 #include <vector>
 #include "boneanimation.h"
 
+//animation classe
+
 using namespace std;
 
 class Animation

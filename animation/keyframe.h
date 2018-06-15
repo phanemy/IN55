@@ -4,6 +4,8 @@
 #include <QString>
 #include "bonetransform.h"
 
+//map a time and a bone transform
+
 using namespace std;
 
 class KeyFrame

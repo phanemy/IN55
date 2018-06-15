@@ -3,41 +3,24 @@
 
 GeometryLoader::GeometryLoader(QDomNode geometryNode, QList<VertexSkinData> vertexWeights):m_vertices(),m_textures(),m_normals(),m_indices(){
     this->m_vertexWeights = vertexWeights;
-//	for(VertexSkinData vd : vertexWeights)
-//	{
-//		list<int> tempInt = vd.getBoneIds();
-//		list<float> tempfloat = vd.getWeights();
-//		list<int
-
-//	}
 	this->m_meshData = geometryNode.namedItem("geometry").namedItem("mesh");
 	m_CORRECTION = QMatrix4x4();
 	m_CORRECTION.rotate(-90,QVector3D(1,0,0));
 }
 
 MeshData GeometryLoader::extractModelData(){
-//	cout << "readRawData"<<endl;
 	readRawData();
-//	cout << "assembleVertices"<<endl;
 	assembleVertices();
-//	cout << "removeUnusedVertices"<<endl;
 	removeUnusedVertices();
-//	cout << "initArrays"<<endl;
 	initArrays();
-//	cout << "convertDataToArrays"<<endl;
 	convertDataToArrays();
-//	cout << "convertIndicesListToArray"<<endl;
 	convertIndicesListToArray();
-//	cout << "return meshData"<<endl;
-    return MeshData(m_verticesArray.toStdVector(), m_texturesArray.toStdVector(), m_normalsArray.toStdVector(), m_indicesArray.toStdVector(), m_jointIdsArray.toStdVector(), m_weightsArray.toStdVector());
+	return MeshData(m_verticesArray.toStdVector(), m_texturesArray.toStdVector(), m_normalsArray.toStdVector(), m_indicesArray.toStdVector(), m_boneIdsArray.toStdVector(), m_weightsArray.toStdVector());
 }
 
 void GeometryLoader::readRawData(){
-//	cout<<"readPositions"<<endl;
 	readPositions();
-//	cout<<"readNormals"<<endl;
 	readNormals();
-//	cout<<"readTextureCoords"<<endl;
 	readTextureCoords();
 }
 
@@ -53,7 +36,6 @@ void GeometryLoader::readPositions(){
 		double z = QString(posData[i * 3 + 2]).toDouble();
 		QVector4D position = QVector4D(x, y, z, 1);
 		position = m_CORRECTION * position;
-
 		m_vertices.push_back(Vertex(m_vertices.size(), QVector3D(position.x(), position.y(), position.z()), *it));
 		it++;
 	}
@@ -92,7 +74,6 @@ void GeometryLoader::assembleVertices(){
 	QDomNode poly = m_meshData.namedItem("polylist");
 	int typeCount = MyXmlNode(poly).getChildren("input").size();
 	QStringList indexData = poly.namedItem("p").firstChild().nodeValue().split(" ");
-	cout << "typecount " << typeCount << " " <<indexData.size()<<endl;
 	for(int i=0;i<indexData.size()/typeCount;i++){
 		int positionIndex=-1;
 		int normalIndex=-1;
@@ -104,24 +85,18 @@ void GeometryLoader::assembleVertices(){
 		if(m_textures.size()!=0)
 			texCoordIndex = QString(indexData[i * typeCount + 2]).toInt();
 		processVertex(positionIndex, normalIndex, texCoordIndex);
-        QList<Vertex>::iterator it = m_vertices.begin();
-		advance(it,positionIndex);
-		Vertex currentVertex = *it;
 	}
 }
 
 Vertex GeometryLoader::processVertex(int posIndex, int normIndex, int texIndex){
     QList<Vertex>::iterator it = m_vertices.begin();
 	advance(it,posIndex);
-//	cout<< "test test test "<<posIndex<<" "<< it->isSet()<< " "<<it->getNormalIndex()<<endl;
 	if (!it->isSet()) {
 		it->setTextureIndex(texIndex);
 		it->setNormalIndex(normIndex);
-//		cout<< "test test test "<<posIndex<<" "<< normIndex<< " "<<it->getNormalIndex()<<endl;
 		m_indices.push_back(posIndex);
 		return *it;
 	} else {
-//		cout<< "merde"<<endl;
 		return dealWithAlreadyProcessedVertex(*it, texIndex, normIndex);
 	}
 }
@@ -146,20 +121,29 @@ float GeometryLoader::convertDataToArrays(){
 		advance(itText,it->getTextureIndex());
         QList<QVector3D>::iterator itNorm = m_normals.begin();
 		advance(itNorm,it->getNormalIndex());
-//		cout << "blablabla " <<*it->getNormalIndex()<<" " << normalVector.x()<<" "<< normalVector.y()<<" "<< normalVector.z()<<endl;
 		m_verticesArray[i * 3] = it->getPosition().x();
 		m_verticesArray[i * 3 + 1] = it->getPosition().y();
 		m_verticesArray[i * 3 + 2] = it->getPosition().z();
-		m_texturesArray[i * 2] = itText->x();
-		m_texturesArray[i * 2 + 1] = 1 - itText->y();
-		m_normalsArray[i * 3] = itNorm->x();
-		m_normalsArray[i * 3 + 1] = itNorm->y();
-		m_normalsArray[i * 3 + 2] = itNorm->z();
+		if(it->isSet()){
+			m_normalsArray[i * 3] = itNorm->x();
+			m_normalsArray[i * 3 + 1] = itNorm->y();
+			m_normalsArray[i * 3 + 2] = itNorm->z();
+			m_texturesArray[i * 2] = itText->x();
+			m_texturesArray[i * 2 + 1] = 1 - itText->y();
+		}
+		else
+		{
+			m_normalsArray[i * 3] = 0;
+			m_normalsArray[i * 3 + 1] = 0;
+			m_normalsArray[i * 3 + 2] = 0;
+			m_texturesArray[i * 2] = 0;
+			m_texturesArray[i * 2 + 1] = 1;
+		}
 		VertexSkinData weights = it->getWeightsData();
         QList<int>::iterator itBone = weights.getBoneIds().begin();
-		m_jointIdsArray[i * 3] = *itBone++;
-		m_jointIdsArray[i * 3 + 1] = *itBone++;
-		m_jointIdsArray[i * 3 + 2] = *itBone++;
+		m_boneIdsArray[i * 3] = *itBone++;
+		m_boneIdsArray[i * 3 + 1] = *itBone++;
+		m_boneIdsArray[i * 3 + 2] = *itBone++;
         QList<float>::iterator itWeights = weights.getWeights().begin();
 		m_weightsArray[i * 3] = *itWeights++;
 		m_weightsArray[i * 3 + 1] = *itWeights++;
@@ -193,7 +177,7 @@ void GeometryLoader::initArrays(){
     this->m_verticesArray = QVector<float>(m_vertices.size() * 3);
     this->m_texturesArray = QVector<float>(m_vertices.size() * 2);
     this->m_normalsArray = QVector<float>(m_vertices.size() * 3);
-    this->m_jointIdsArray = QVector<int>(m_vertices.size() * 3);
+	this->m_boneIdsArray = QVector<int>(m_vertices.size() * 3);
     this->m_weightsArray = QVector<float>(m_vertices.size() * 3);
 }
 void GeometryLoader::removeUnusedVertices(){

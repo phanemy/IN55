@@ -26,20 +26,13 @@ protected:
     virtual void initGeometry() = 0;
 	QOpenGLBuffer m_arrayBuf;
     QOpenGLBuffer m_indexBuf;
-//	QOpenGLBuffer m_normalBuf;
-//	QOpenGLBuffer m_colorBuf;
-	QOpenGLBuffer m_jointIdBuf;
+	QOpenGLBuffer m_boneIdBuf;
 	QOpenGLBuffer m_weightBuf;
-//	QOpenGLBuffer m_verticesBuf;
 
 	GLushort* m_indices;
 	VertexData* m_vertices;
-//	QVector<QVector3D> m_position;
-//	QVector<QVector3D> m_color;
-	QVector<QVector3D> m_joinIds;
+	QVector<QVector3D> m_boneIds;
 	QVector<QVector3D> m_weights;
-//	QVector<QVector3D> m_normal;
-//	QVector<QVector3D> m_verticesList;
 
     int m_nbrVertices;
     int m_nbrIndices;

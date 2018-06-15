@@ -24,8 +24,8 @@ private:
     QStringList m_boneOrder;
     int m_boneCount = 0 ;
     QMatrix4x4 m_CORRECTION;
-    BoneData loadJointData(QDomNode jointNode, bool isRoot);
-    BoneData extractMainJointData(QDomNode jointNode, bool isRoot);
+	BoneData loadBoneData(QDomNode boneNode, bool isRoot);
+	BoneData extractMainBoneData(QDomNode boneNode, bool isRoot);
     float* convertData(QStringList rawData);
 };
 

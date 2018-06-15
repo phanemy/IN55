@@ -4,6 +4,8 @@
 #include "bone.h"
 #include "animation.h"
 
+//animator class
+
 class Animator
 {
 public:
@@ -13,7 +15,7 @@ public:
 	void update(float time);
 	void increaseAnimationTime(float time);
 	map<QString, QMatrix4x4> calculateCurrentAnimationPose();
-	void applyPoseToJoints(map<QString, QMatrix4x4> currentPose, Bone* joint, QMatrix4x4 parentTransform);
+	void applyPoseToBones(map<QString, QMatrix4x4> currentPose, Bone* bone, QMatrix4x4 parentTransform);
 	vector<KeyFrame> getPreviousAndNextFrames(BoneAnimation boneAnim);
 	float calculateProgression(KeyFrame previousFrame, KeyFrame nextFrame);
 	QMatrix4x4 interpolatePoses(KeyFrame previousFrame, KeyFrame nextFrame, float progression);
